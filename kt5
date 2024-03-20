@@ -1,0 +1,103 @@
+from selenium import webdriver
+from selenium.webdriver.common.keys import Keys
+import time
+
+
+
+# открытие админ-панели OpenCart
+driver = webdriver.Chrome()
+driver.get("http://your_opencart_admin_url")
+time.sleep(2)
+
+
+
+
+# Логин в админ-панель 
+username = driver.find_element_by_id("input-username")
+username.send_keys("your_username")
+
+password = driver.find_element_by_id("input-password")
+password.send_keys("your_password")
+
+login_button = driver.find_element_by_css_selector(".btn.btn-primary")
+login_button.click()
+time.sleep(2)
+
+
+
+
+
+# Создание новой категории "Devices"
+driver.get("http://your_opencart_admin_url/index.php?route=catalog/category&token=your_token")
+
+add_category_button = driver.find_element_by_css_selector(".fa-plus")
+add_category_button.click()
+time.sleep(1)
+
+category_name = driver.find_element_by_id("input-name1")
+category_name.send_keys("Devices")
+category_name.send_keys(Keys.ENTER)
+time.sleep(1)
+
+
+
+
+# Добавление товаров в категорию "Devices"
+for i in range(2):
+    driver.get("http://your_opencart_admin_url/index.php?route=catalog/product/add&token=your_token")
+    
+    product_name = driver.find_element_by_id("input-name1")
+    product_name.send_keys(f"Mouse {i+1}")
+
+    product_description = driver.find_element_by_css_selector(".note-editable.panel-body")
+    product_description.send_keys("Description for the mouse.")
+
+    driver.find_element_by_css_selector("button[data-original-title='Save']").click()
+    time.sleep(1)
+
+for i in range(2):
+    driver.get("http://your_opencart_admin_url/index.php?route=catalog/product/add&token=your_token")
+    
+    product_name = driver.find_element_by_id("input-name1")
+    product_name.send_keys(f"Keyboard {i+1}")
+
+    product_description = driver.find_element_by_css_selector(".note-editable.panel-body")
+    product_description.send_keys("Description for the keyboard.")
+
+    driver.find_element_by_css_selector("button[data-original-title='Save']").click()
+    time.sleep(1)
+
+
+
+# Поиск добавленных товаров на главной странице 
+driver.get("http://your_opencart_url")
+search_input = driver.find_element_by_name("search")
+search_input.send_keys("Mouse")
+search_input.send_keys(Keys.RETURN)
+time.sleep(2)
+
+
+
+
+# Удаление
+driver.get("http://your_opencart_admin_url/index.php?route=catalog/product&token=your_token")
+select_first_product = driver.find_element_by_css_selector("input[name='selected[]']")
+select_first_product.click()
+select_second_product = driver.find_elements_by_css_selector("input[name='selected[]']")[1]
+select_second_product.click()
+
+delete_button = driver.find_element_by_css_selector(".btn.btn-danger")
+delete_button.click()
+time.sleep(1)
+
+
+
+
+driver.get("http://your_opencart_url")
+search_input.clear()
+search_input.send_keys("Keyboard")
+search_input.send_keys(Keys.RETURN)
+time.sleep(2)
+
+
+driver.quit()
